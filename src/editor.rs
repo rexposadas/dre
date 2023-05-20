@@ -104,13 +104,13 @@ impl Editor {
         Terminal::cursor_position(&Position::default());
         if self.should_quit {
             Terminal::clear_screen();
-            println!("Keep planting. Goodbye.\r");
+            println!("Dre says Goodbye.\r");
         } else {
             self.draw_rows();
             self.draw_status_bar();
             self.draw_message_bar();
             Terminal::cursor_position(&Position {
-                // saturation means we go beyond the allowed value for the type.
+                // saturation prevents going beyond the allowed value for the type.
                 x: self.cursor_position.x.saturating_sub(self.offset.x),
                 y: self.cursor_position.y.saturating_sub(self.offset.y),
             });
@@ -207,7 +207,7 @@ impl Editor {
             Key::Up => y = y.saturating_sub(1),
             Key::Down =>
                 {
-                    if y < height {
+                    if y < height -1 {
                         y = y.saturating_add(1)
                     }
                 }
@@ -243,7 +243,7 @@ impl Editor {
                     y.saturating_add(terminal_height)
                 } else {
                     height
-                }
+                };
             }
             Key::Home => x = 0,
             Key::End => x = width,
@@ -261,7 +261,7 @@ impl Editor {
     }
 
     fn draw_welcome_message(&self) {
-        let mut welcome_message = format!("Hecto editor -- version {}", VERSION);
+        let mut welcome_message = format!("Dre text editor -- version {}", VERSION);
         let width = self.terminal.size().width as usize;
         let len = welcome_message.len();
         let padding = width.saturating_sub(len) / 2;
@@ -282,7 +282,7 @@ impl Editor {
     }
 
     fn draw_rows(&self) {
-        let height = self.terminal.size().height;
+        let height = self.terminal.size().height -1;
         for terminal_row in 0..height {
             Terminal::clear_current_line();
             if let Some(row) = self.document.row(self.offset.y.saturating_add(terminal_row as usize)) {

@@ -38,7 +38,7 @@ impl Terminal {
     }
 
     pub fn cursor_position(position: &Position) {
-        let Position { mut x, mut y } = position;
+        let Position { x, y } = position;
         let x = x.saturating_add(1);
         let y = y.saturating_add(1);
         let x = x as u16;
@@ -46,10 +46,10 @@ impl Terminal {
         print!("{}", termion::cursor::Goto(x, y));
     }
 
-    pub fn flush() -> Result<(), std::io::Error> {
-        io::stdout().flush()
+    pub fn flush() -> Result<(), io::Error> {
+        stdout().flush()
     }
-    pub fn read_key() -> Result<Key, std::io::Error> {
+    pub fn read_key() -> Result<Key, io::Error> {
         loop {
             if let Some(key) = io::stdin().lock().keys().next() {
                 return key;
@@ -69,12 +69,12 @@ impl Terminal {
         print!("{}", termion::clear::CurrentLine);
     }
 
-    pub fn set_bg_color(color: termion::color::Rgb){
-        print!("{}", termion::color::Bg(color));
+    pub fn set_bg_color(color: color::Rgb){
+        print!("{}", color::Bg(color));
     }
 
     pub fn reset_bg_color(){
-        print!("{}", termion::color::Bg(termion::color::Reset));
+        print!("{}", color::Bg(color::Reset));
     }
 
     pub fn set_fg_color(color: color::Rgb){
